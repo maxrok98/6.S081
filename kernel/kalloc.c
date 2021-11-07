@@ -80,3 +80,20 @@ kalloc(void)
     memset((char*)r, 5, PGSIZE); // fill with junk
   return (void*)r;
 }
+
+// Return amount of free memory in bytes
+uint64
+kfreemem(void)
+{
+  int n = 0;
+  struct run *r;
+  acquire(&kmem.lock);
+  
+	// Every free 4096 bytes block at the start have a pointer to next free block
+  for (r = kmem.freelist; r; r = r->next) // Implemented as linked list
+    ++n;
+
+  release(&kmem.lock);
+
+  return n * 4096;
+}

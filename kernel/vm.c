@@ -281,6 +281,24 @@ freewalk(pagetable_t pagetable)
   kfree((void*)pagetable);
 }
 
+// Prints virtual memory
+void
+vmprint(pagetable_t pagetable, int level)
+{
+	char* delimiter = " ..";
+	if(level == 0) printf("page table %p\n", pagetable);
+	for(int i = 0; i < 512; i++){
+		pte_t pte = pagetable[i];
+    if((pte & PTE_V)){
+      // this PTE points to a lower-level page table.
+      uint64 child = PTE2PA(pte);
+			for(int j = 0; j < level+1; j++) printf(delimiter);
+			printf("%d: pte %p pa %p\n", i, pte, child);
+      if(level < 2) vmprint((pagetable_t)child, level+1);
+		}
+	}
+}
+
 // Free user memory pages,
 // then free page-table pages.
 void

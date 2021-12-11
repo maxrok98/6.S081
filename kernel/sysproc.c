@@ -80,8 +80,25 @@ sys_sleep(void)
 int
 sys_pgaccess(void)
 {
-  // lab pgtbl: your code here.
-  return 0;
+  //glab pgtbl: your code here.
+  uint64 bitmask, va, ret;
+	int page_num;
+
+	if(argaddr(0, &va) < 0)
+		return -1; 
+	if(argint(1, &page_num) < 0)
+		return -1; 
+	if(argaddr(2, &ret) < 0)
+		return -1; 
+
+	//set upper limit on number of pages that can be scanned
+	if(page_num > 64)
+		return -1;
+
+	pagetable_t pagetable = myproc()->pagetable;
+	bitmask = accessed_pages(pagetable, va, page_num);
+
+	return copyout(pagetable, ret, (char *)&bitmask, sizeof(uint64));
 }
 #endif
 

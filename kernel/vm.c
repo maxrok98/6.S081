@@ -120,6 +120,26 @@ walkaddr(pagetable_t pagetable, uint64 va)
   return pa;
 }
 
+// Return bitmap of accessed pages
+uint64
+accessed_pages(pagetable_t pagetable, uint64 va, int page_num)
+{
+	uint64 bitmask = 0;
+  pte_t *pte;
+
+  if(va >= MAXVA)
+    return 0;
+
+	for(int i = 0; i < page_num; i++){
+		pte = walk(pagetable, va+(i*PGSIZE), 0);
+		if(*pte & PTE_A){
+			*pte &= ~(PTE_A);
+			bitmask |= (1L << i);
+		}
+	}
+	return bitmask;
+}
+
 // add a mapping to the kernel page table.
 // only used when booting.
 // does not flush TLB or enable paging.

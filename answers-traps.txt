@@ -1,0 +1,25 @@
+Q: Which registers contain arguments to functions? For example, which register holds 13 in main's call to printf?
+A: a0-a7 registers contains arguments to functions.
+
+Q: Where is the call to function f in the assembly code for main? Where is the call to g? (Hint: the compiler may inline functions.) 
+A: Compiler inline these function calls, means it is not creatind new stack frames and just inserts instructions from these functions or as in our case determine return value at compile time.
+
+Q: At what address is the function printf located? 
+A: 46: 600080e7            jalr  1536(ra) # 642 <printf> - means that printf is at located at address 642
+
+Q: What value is in the register ra just after the jalr to printf in main? 
+A: ra contains return address, in our case it contains 0x38 after jalr to printf.
+
+Q: Run the following code.
+
+	unsigned int i = 0x00646c72;
+	printf("H%x Wo%s", 57616, &i);
+A: result: He110 World. Result is dependent on endiannes of machine. RISC-V is little-endian.
+Example:
+	little endian - 0x00646c57 - values at sequential adresses 0000 0000 0110 0100 0110 1100 0101 0111
+	big endian - 0x00646c57 - values at sequential adresses 0111 0101 1100 0110 0100 0110 0000 0000
+
+Q: printf("x=%d y=%d", 3);
+A: y= whatewar happend to be lower in stack
+      
+
